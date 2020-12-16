@@ -1,6 +1,6 @@
 function doGet(e){
   // Max rows per sheet
-  var rowLimit = 10000;
+  var rowLimit = 100;
   
   // open the spreadsheet
   var ss = SpreadsheetApp.getActive();
@@ -59,8 +59,13 @@ var formattedDate = Utilities.formatDate(new Date(), "GMT", "yyyy-MM-dd' 'HH:mm:
 var name = SpreadsheetApp.getActiveSpreadsheet().getName() + " Automated Copy " + formattedDate;
 
 // gets the destination folder by their ID. REPLACE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx with your folder's ID that you can get by opening the folder in Google Drive and checking the URL in the browser's address bar
-var destination = DriveApp.getFolderById("16idbGR7s9JPf5Nhly_dZlpaTL1FY5RMN");
-
+var spreadsheetId =  SpreadsheetApp.getActiveSpreadsheet().getId();
+var spreadsheetFile =  DriveApp.getFileById(spreadsheetId);
+var folderId = spreadsheetFile.getParents().next().getId();
+//var destination = DriveApp.getFolderById("16idbGR7s9JPf5Nhly_dZlpaTL1FY5RMN");
+  var destination = DriveApp.getFolderById(folderId);
+  Logger.log(destination)
+ 
 // gets the current Google Sheet file
 var file = DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId())
 
