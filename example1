@@ -1,21 +1,8 @@
 function doGet(e){
-  // Max rows per sheet
   var rowLimit = 100;
-  
-  // open the spreadsheet
   var ss = SpreadsheetApp.getActive();
-  
-  // use the 'id' parameter to differentiate between sheets
   var sheet = ss.getSheetByName(e.parameter["id"]);
-  
-  // extract headers
-  // getRange accepts row, col, number_of_rows and num_of_cols as argument
-  // getLastColumn returns the position of the last column that has content
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  
-  // store the position of the last row
-  //var lastRowOriginal = sheet.getLastRow();
-  
   var cell = sheet.getRange('a1');
   var col = 0;
   var d = new Date();
@@ -23,18 +10,13 @@ function doGet(e){
   for (j = 10; j >= 0; j--) {
     lastRow = sheet.getLastRow();
     col = 0;
-    for (i in headers){
-     //loop through the headers and if a parameter name matches the header name insert the value
-      
-      //append data to the last row
+    for (i in headers) {
       val = e.parameter["row"+j.toString()+headers[i]];
       cell.offset(lastRow, col).setValue(val);
       col++;
     }
-     // loop through the headers and if a parameter name matches the header name insert the value
   }
   
-  // Split workbook if exceeds row count
   if (lastRow > rowLimit) {
     makeCopy();
     testWait();
@@ -51,24 +33,13 @@ function testWait(){
 }
 
 function makeCopy() {
-
-// generates the timestamp and stores in variable formattedDate as year-month-date hour-minute-second
 var formattedDate = Utilities.formatDate(new Date(), "GMT", "yyyy-MM-dd' 'HH:mm:ss");
-
-// gets the name of the original file and appends the word "copy" followed by the timestamp stored in formattedDate
 var name = SpreadsheetApp.getActiveSpreadsheet().getName() + " Automated Copy " + formattedDate;
-
-// gets the destination folder by their ID. REPLACE xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx with your folder's ID that you can get by opening the folder in Google Drive and checking the URL in the browser's address bar
 var spreadsheetId =  SpreadsheetApp.getActiveSpreadsheet().getId();
 var spreadsheetFile =  DriveApp.getFileById(spreadsheetId);
 var folderId = spreadsheetFile.getParents().next().getId();
-//var destination = DriveApp.getFolderById("16idbGR7s9JPf5Nhly_dZlpaTL1FY5RMN");
-  var destination = DriveApp.getFolderById(folderId);
-  Logger.log(destination)
- 
-// gets the current Google Sheet file
+var destination = DriveApp.getFolderById(folderId);
+Logger.log(destination);
 var file = DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId())
-
-// makes copy of "file" with "name" at the "destination"
 file.makeCopy(name, destination);
 }
